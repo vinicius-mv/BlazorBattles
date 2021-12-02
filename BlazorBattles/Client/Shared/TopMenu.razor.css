@@ -1,0 +1,9 @@
+﻿body {
+    background-color: red;
+}
+
+.top-menu {
+    display: flex;
+    justify-content: center;
+    width: 100%
+}
