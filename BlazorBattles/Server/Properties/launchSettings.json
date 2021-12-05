@@ -23,7 +23,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "https://localhost:30001;http://localhost:30000",
+      "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "dotnetRunMessages": "true"
     },
     "WSL": {
@@ -32,7 +32,7 @@
       "launchUrl": "https://localhost:5001",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_URLS": "https://localhost:30001;http://localhost:30000"
+        "ASPNETCORE_URLS": "https://localhost:5001;http://localhost:5000"
       },
       "distributionName": ""
     }
