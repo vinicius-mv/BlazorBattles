@@ -29,6 +29,8 @@ namespace BlazorBattles.Client
             builder.Services.AddScoped<IUnitService, UnitService>();
             builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
 
+            builder.Services.AddScoped<IAuthService, AuthService>();
+
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
 

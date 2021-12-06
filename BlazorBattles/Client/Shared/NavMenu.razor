@@ -58,7 +58,7 @@
 
     private async void Logout()
     {
-        await LocalStorage.RemoveItemAsync("isAuthenticated");
+        await LocalStorage.RemoveItemAsync("authToken");
 
         // notify components - 'NotifyAuthenticationStateChanged()' - that auth state has changed
         await AuthStateProvider.GetAuthenticationStateAsync();

@@ -1,5 +1,7 @@
 ﻿@inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IAuthService AuthService
+@inject IToastService ToastService
 
 Please log in below or <a href="register">register</a> for a new account.
 
@@ -7,8 +9,8 @@ Please log in below or <a href="register">register</a> for a new account.
     <DataAnnotationsValidator></DataAnnotationsValidator>
     <ValidationSummary></ValidationSummary>
     <div class="form-group">
-        <label for="username">Username</label>
-        <InputText id="username" @bind-Value="user.Username" class="form-control"></InputText>
+        <label for="email">Email</label>
+        <InputText id="email" @bind-Value="user.Email" class="form-control"></InputText>
     </div>
     <div class="form-group">
         <label for="password">Password</label>
@@ -22,7 +24,16 @@ Please log in below or <a href="register">register</a> for a new account.
 
     private async Task HandleLogin()
     {
-        await LocalStorage.SetItemAsync<bool>("isAuthenticated", true);
-        await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        var result = await AuthService.LoginAsync(user);
+        if (result.IsSuccess)
+        {
+            string token = result.Data;
+            await LocalStorage.SetItemAsync<string>("authToken", token.Replace("\"", token));
+            await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        }
+        else
+        {
+            ToastService.ShowError(result.Message);
+        }
     }
 }

@@ -1,11 +1,12 @@
 ﻿@page "/register"
 @inject IUnitService UnitService
-@inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
+@inject IAuthService AuthService
+@inject IToastService ToastService
 
 <h3>Register</h3>
 
-<EditForm Model="user" OnValidSubmit="HandlerRegistration">
+<EditForm Model="user" OnValidSubmit="HandlerRegistrationAsync">
 
     <DataAnnotationsValidator></DataAnnotationsValidator>
 
@@ -40,13 +41,13 @@
 
     @* ***** (Input Input Select) ******
         <div class="form-group">
-            <label for="startUnit">Start Unit </label>
-            <InputSelect id="startUnit" @bind-Value="user.StartUnitId" class="form-control">
-                @foreach (var unit in UnitService.Units)
-                {
-                    <option value="@unit.Id">@unit.Title</option>
-                }
-            </InputSelect>
+        <label for="startUnit">Start Unit </label>
+        <InputSelect id="startUnit" @bind-Value="user.StartUnitId" class="form-control">
+        @foreach (var unit in UnitService.Units)
+        {
+        <option value="@unit.Id">@unit.Title</option>
+        }
+        </InputSelect>
         </div>*@
 
     <div class="form-group">
@@ -87,12 +88,17 @@
         await UnitService.LoadUnitsAsync();
     }
 
-    void HandlerRegistration()
+    private async Task HandlerRegistrationAsync()
     {
-        Console.WriteLine(user); // output: BlazorBattles.Shared.UserRegister
-
-        JSRuntime.InvokeVoidAsync($"console.log", user);  // output: { email: 'xx' username: 'xxxx', .... }
-
-        NavigationManager.NavigateTo("login");
+        var result = await AuthService.RegisterAsync(user);
+        if (result.IsSuccess)
+        {
+            ToastService.ShowSuccess(result.Message);
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            ToastService.ShowError(result.Message);
+        }
     }
 }
