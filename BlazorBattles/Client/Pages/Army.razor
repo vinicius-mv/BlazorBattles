@@ -42,7 +42,7 @@ else
 @code {
     protected override async Task OnInitializedAsync()
     {
-        await Task.Delay(2000);
         await UnitService.LoadUnitsAsync();
+        await UnitService.LoadUserUnitsAsync();
     }
 }
