@@ -18,7 +18,7 @@ namespace BlazorBattles.Server.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public async Task<User> GetUser()
+        public async Task<User> GetUserAsync()
         {
             var userId = int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);

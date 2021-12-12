@@ -1,0 +1,95 @@
+﻿@page "/leaderboard"
+@inject ILeaderboardService LeaderboardService
+@inject AuthenticationStateProvider AuthStateProvider
+@inject IBattleService BattleService
+@inject IBananaService BananaService
+@inject IToastService ToastService
+@inject NavigationManager NavigationManager
+
+<h3>Leaderboard</h3>
+
+@if (LeaderboardService.Leaderboard == null)
+{
+    <span>Loading Leaderboard...</span>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>User</th>
+                <th>Victories</th>
+                <th>Defeats</th>
+                <th>Battles</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var entry in LeaderboardService.Leaderboard)
+            {
+                <tr style="@GetMyStyle(entry.UserId)">
+                    <td>@entry.Rank</td>
+                    <td>@entry.Username</td>
+                    <td>@entry.Victories</td>
+                    <td>@entry.Defeats</td>
+                    <td>@entry.Battles</td>
+                    <td>
+                        <button @attributes="@DisabledFightButtonForMyArmy(entry.UserId)" @onclick="@(() => StartBattleAsync(entry.UserId))" class="btn btn-primary">Fight!</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    int myUserId;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LeaderboardService.GetLeaderboardAsync();
+
+        var authState = await AuthStateProvider.GetAuthenticationStateAsync();
+
+        myUserId = int.Parse(authState.User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier).Value);
+    }
+
+    public string GetMyStyle(int userId)
+    {
+        if (userId == myUserId)
+            return "color: green; font-weight: 600;";
+        else
+            return string.Empty;
+    }
+
+    public Dictionary<string, object> DisabledFightButtonForMyArmy(int userId)
+    {
+        var dict = new Dictionary<string, object>();
+        if (userId == this.myUserId)
+            dict.Add("disabled", true);
+        else
+            dict.Add("disabled", false);
+
+        return dict;
+    }
+
+    public async Task StartBattleAsync(int opponentId)
+    {
+        Console.WriteLine($"StartBattle with {opponentId}.");
+        var result = await BattleService.StartBattleAsync(opponentId);
+
+        if (result.RoundsFought <= 0)
+            ToastService.ShowInfo("The battle did not take place.");
+        else if (result.IsVictory)
+            ToastService.ShowSuccess("You won the battle!");
+        else
+            ToastService.ShowWarning("You have been destroyed.");
+
+        await LeaderboardService.GetLeaderboardAsync();
+        await BananaService.GetBananasAsync();
+
+        if (result.RoundsFought > 0)
+            NavigationManager.NavigateTo("battlelog");
+    }
+}

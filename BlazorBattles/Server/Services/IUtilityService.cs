@@ -5,6 +5,6 @@ namespace BlazorBattles.Server.Services
 {
     public interface IUtilityService
     {
-        Task<User> GetUser();
+        Task<User> GetUserAsync();
     }
 }

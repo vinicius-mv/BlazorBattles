@@ -11,5 +11,6 @@ namespace BlazorBattles.Client.Services
         Task AddUnitAsync(int unitId);
         Task LoadUnitsAsync();
         Task LoadUserUnitsAsync();
+        Task ReviveArmyAsync();
     }
 }
